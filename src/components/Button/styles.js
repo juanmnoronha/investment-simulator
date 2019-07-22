@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 export const Container = styled.button`
-  background: #001834;
+  color: #fff;
   border-radius: 8px;
   border: none;
-  color: #fff;
+  background: #6a4abe;
   font-size: 20px;
   font-weight: 500;
   height: 64px;
@@ -13,6 +13,6 @@ export const Container = styled.button`
   width: 100%;
 
   &:hover {
-    color: #4eeda2;
+    background: #001834;
   }
 `;
