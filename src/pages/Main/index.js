@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Header from '../../components/Header';
 import { Container } from '../../styles/components';
+import api from '../../services/api';
 
-export default function Main() {
+function Main({ history }) {
   const initialState = {
     name: '',
     monthly: '',
@@ -22,9 +25,23 @@ export default function Main() {
     setValues({ ...values, [name]: value });
   }
 
-  function handleSubmit(e) {
-    if (e) e.preventDefault();
-    setValues(initialState);
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const body = `{ "expr": "${
+        values.monthly
+      } * (((1 + 0.00517) ^ ${values.time * 12} - 1) / 0.00517)" }`;
+      const response = await api.post(`/`, body);
+
+      history.push('/resultado');
+
+      setValues(initialState);
+
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const { name, monthly, time } = values;
@@ -62,3 +79,11 @@ export default function Main() {
     </Container>
   );
 }
+
+Main.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
+};
+
+export default withRouter(Main);
