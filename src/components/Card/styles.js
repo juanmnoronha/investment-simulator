@@ -34,9 +34,9 @@ export const Container = styled.section`
 
   p {
     color: #333;
-    font-size: 32px;
+    font-size: 30px;
     margin-bottom: 36px;
-    line-height: 48px;
+    line-height: 40px;
 
     strong {
       color: #324b68;

@@ -7,6 +7,7 @@ import Button from '../../components/Button';
 import Header from '../../components/Header';
 import { Container } from '../../styles/components';
 import api from '../../services/api';
+import { formatPrice } from '../../util/format';
 
 function Result({ history }) {
   const [simulation, setSimulation] = useState({});
@@ -24,9 +25,9 @@ function Result({ history }) {
         );
         const data = {
           name: setStore.name,
-          monthly: setStore.monthly,
+          monthly: formatPrice(setStore.monthly),
           time: setStore.time,
-          result: response.data,
+          result: formatPrice(response.data),
         };
 
         setSimulation(data);
@@ -40,6 +41,7 @@ function Result({ history }) {
 
   function handleBack() {
     history.push('/');
+    localStorage.clear();
   }
 
   const { name, monthly, time, result } = simulation;
@@ -50,8 +52,8 @@ function Result({ history }) {
       <Card>
         <p>
           Olá <strong>{name}</strong>, <br /> juntando{' '}
-          <strong>R$ {monthly}</strong> todo mês, você terá{' '}
-          <strong>R$ {result}</strong> em <strong>{time} anos</strong>.
+          <strong>{monthly}</strong> todo mês, você terá{' '}
+          <strong>{result}</strong> em <strong>{time} anos</strong>.
         </p>
         <Button type="button" label="Simular Novamente" onClick={handleBack} />
       </Card>
