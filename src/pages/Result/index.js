@@ -17,7 +17,10 @@ function Result({ history }) {
     const store = localStorage.getItem('store');
     const setStore = JSON.parse(store);
     const { monthly, time } = setStore;
-    const expression = `${monthly}*(((1+0.00517)^${time * 12}-1)/0.00517)`;
+    const setMonthly = monthly.replace('R$ ', '');
+    const setTime = time.replace(' anos', '');
+    const expression = `${setMonthly}*(((1+0.00517)^${setTime *
+      12}-1)/0.00517)`;
 
     setLoading(true);
 
@@ -28,7 +31,7 @@ function Result({ history }) {
         );
         const data = {
           name: setStore.name,
-          monthly: formatPrice(setStore.monthly),
+          monthly: formatPrice(setMonthly),
           time: setStore.time,
           result: formatPrice(response.data),
         };
@@ -57,7 +60,7 @@ function Result({ history }) {
         <p>
           Olá <strong>{name}</strong>, <br /> juntando{' '}
           <strong>{monthly}</strong> todo mês, você terá{' '}
-          <strong>{result}</strong> em <strong>{time} anos</strong>.
+          <strong>{result}</strong> em <strong>{time}</strong>.
         </p>
         <Button type="button" label="Simular Novamente" onClick={handleBack} />
       </Card>

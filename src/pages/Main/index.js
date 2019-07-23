@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import Input from 'react-number-format';
 
 import Button from '../../components/Button';
 import Card from '../../components/Card';
@@ -18,14 +19,6 @@ function Main({ history }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const store = localStorage.getItem('store');
-
-    if (store) {
-      setValues({ data: JSON.parse(store) });
-    }
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem('store', JSON.stringify(values));
   }, [values]);
 
@@ -40,12 +33,15 @@ function Main({ history }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    const { monthly, time } = values;
+    const setMonthly = monthly.replace('R$ ', '');
+    const setTime = time.replace(' anos', '');
+
     setLoading(true);
 
     try {
-      const body = `{ "expr": "${
-        values.monthly
-      } * (((1 + 0.00517) ^ ${values.time * 12} - 1) / 0.00517)" }`;
+      const body = `{ "expr": "${setMonthly} * (((1 + 0.00517) ^ ${setTime *
+        12} - 1) / 0.00517)" }`;
 
       await api.post(`/`, body);
 
@@ -68,25 +64,25 @@ function Main({ history }) {
         <h1>Simulador</h1>
         <form onSubmit={handleSubmit}>
           <input
-            type="text"
             name="name"
+            type="text"
+            value={name}
             placeholder="Nome"
             onChange={handleInputChange}
-            value={name}
           />
-          <input
-            type="text"
+          <Input
             name="monthly"
-            placeholder="Mensalidade"
-            onChange={handleInputChange}
             value={monthly}
-          />
-          <input
-            type="text"
-            name="time"
-            placeholder="Tempo"
+            placeholder="Mensalidade"
+            prefix="R$ "
             onChange={handleInputChange}
+          />
+          <Input
+            name="time"
             value={time}
+            placeholder="Tempo"
+            suffix=" anos"
+            onChange={handleInputChange}
           />
           <Button type="submit" label="Simular" loading={loading} />
         </form>
