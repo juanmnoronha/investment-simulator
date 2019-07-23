@@ -8,6 +8,7 @@ export const Container = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-height: 360px;
   max-width: 480px;
   padding: 36px;
   width: 100%;
@@ -36,7 +37,7 @@ export const Container = styled.section`
     color: #333;
     font-size: 30px;
     margin-bottom: 36px;
-    line-height: 40px;
+    line-height: 42px;
 
     strong {
       color: #324b68;

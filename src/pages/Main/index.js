@@ -15,6 +15,7 @@ function Main({ history }) {
     time: '',
   };
   const [values, setValues] = useState(initialState);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const store = localStorage.getItem('store');
@@ -39,12 +40,19 @@ function Main({ history }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
       const body = `{ "expr": "${
         values.monthly
       } * (((1 + 0.00517) ^ ${values.time * 12} - 1) / 0.00517)" }`;
-      const response = await api.post(`/`, body);
+
+      await api.post(`/`, body);
+
+      setLoading(false);
+
       history.push('/resultado');
+
       setValues(initialState);
     } catch (err) {
       console.log(err);
@@ -80,7 +88,7 @@ function Main({ history }) {
             onChange={handleInputChange}
             value={time}
           />
-          <Button type="submit" label="Simular" />
+          <Button type="submit" label="Simular" loading={loading} />
         </form>
       </Card>
     </Container>
