@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
@@ -14,8 +14,19 @@ function Main({ history }) {
     monthly: '',
     time: '',
   };
-
   const [values, setValues] = useState(initialState);
+
+  useEffect(() => {
+    const store = localStorage.getItem('store');
+
+    if (store) {
+      setValues({ data: JSON.parse(store) });
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('store', JSON.stringify(values));
+  }, [values]);
 
   function handleInputChange(e) {
     e.persist();
@@ -33,12 +44,8 @@ function Main({ history }) {
         values.monthly
       } * (((1 + 0.00517) ^ ${values.time * 12} - 1) / 0.00517)" }`;
       const response = await api.post(`/`, body);
-
       history.push('/resultado');
-
       setValues(initialState);
-
-      console.log(response.data);
     } catch (err) {
       console.log(err);
     }

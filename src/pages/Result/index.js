@@ -6,21 +6,32 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Header from '../../components/Header';
 import { Container } from '../../styles/components';
-// import api from '../../services/api';
+import api from '../../services/api';
 
 function Result({ history }) {
-  // const [values, setValues] = useState(initialState);
-  // const expression = `${values.monthly}*(((1+0.00517)^${values.time *
-  //   12}-1)/0.00517)`;
+  const [simulation, setSimulation] = useState({});
 
   useEffect(() => {
+    const store = localStorage.getItem('store');
+    const setStore = JSON.parse(store);
+    const { monthly, time } = setStore;
+    const expression = `${monthly}*(((1+0.00517)^${time * 12}-1)/0.00517)`;
+
     async function loadResult() {
-      // console.log(values);
       try {
-        // const response = await api.get(`/?expr=${decodeURIComponent(data)}`);
-        // console.log(values.name);
+        const response = await api.get(
+          `/?expr=${encodeURIComponent(expression)}`
+        );
+        const data = {
+          name: setStore.name,
+          monthly: setStore.monthly,
+          time: setStore.time,
+          result: response.data,
+        };
+
+        setSimulation(data);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     }
 
@@ -31,14 +42,16 @@ function Result({ history }) {
     history.push('/');
   }
 
+  const { name, monthly, time, result } = simulation;
+
   return (
     <Container>
       <Header />
       <Card>
         <p>
-          Olá <strong>Tobias</strong>, <br /> juntando <strong>R$ 20,00</strong>{' '}
-          todo mês, você terá <strong>R$ 509,65</strong> em{' '}
-          <strong>2 anos</strong>.
+          Olá <strong>{name}</strong>, <br /> juntando{' '}
+          <strong>R$ {monthly}</strong> todo mês, você terá{' '}
+          <strong>R$ {result}</strong> em <strong>{time} anos</strong>.
         </p>
         <Button type="button" label="Simular Novamente" onClick={handleBack} />
       </Card>
