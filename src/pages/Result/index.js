@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import axio from 'axios';
 
 import Card from '../../components/Card';
 import Button from '../../components/Button';
@@ -21,13 +22,17 @@ function Result({ history }) {
     const setTime = time.replace(' anos', '');
     const expression = `${setMonthly}*(((1+0.00517)^${setTime *
       12}-1)/0.00517)`;
+    const source = axio.CancelToken.source();
 
     setLoading(true);
 
     async function loadResult() {
       try {
         const response = await api.get(
-          `/?expr=${encodeURIComponent(expression)}`
+          `/?expr=${encodeURIComponent(expression)}`,
+          {
+            cancelToken: source.token,
+          }
         );
         const data = {
           name: setStore.name,

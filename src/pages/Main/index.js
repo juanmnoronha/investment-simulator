@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import Input from 'react-number-format';
@@ -18,40 +18,28 @@ function Main({ history }) {
   const [values, setValues] = useState(initialState);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem('store', JSON.stringify(values));
-  }, [values]);
-
   function handleInputChange(e) {
     e.persist();
-
     const { name, value } = e.target;
-
     setValues({ ...values, [name]: value });
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     const { monthly, time } = values;
     const setMonthly = monthly.replace('R$ ', '');
     const setTime = time.replace(' anos', '');
-
     setLoading(true);
-
     try {
       const body = `{ "expr": "${setMonthly} * (((1 + 0.00517) ^ ${setTime *
         12} - 1) / 0.00517)" }`;
-
       await api.post(`/`, body);
-
       setLoading(false);
-
-      history.push('/resultado');
-
       setValues(initialState);
+      history.push('/resultado');
+      localStorage.setItem('store', JSON.stringify(values));
     } catch (err) {
-      console.log(err);
+      throw new Error('Erro ao fazer a simulação');
     }
   }
 
